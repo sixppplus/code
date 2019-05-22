@@ -1,0 +1,35 @@
+{
+  "status": 1,
+  "msg": "",
+  "legendData": [
+    "Java基础",
+    "jdbc",
+    "面向对象",
+    "继承",
+    "重载",
+    "多态"
+  ],
+  "seriesData": [
+    {
+      "value": 2,
+      "name": "Java基础"
+    },
+    {
+      "value": 10,
+      "name": "jdbc"
+    },
+    {
+      "value": 22,
+      "name": "面向对象"
+    },
+    {
+      "value": 1,
+      "name": "继承"
+    },
+
+    {
+      "value": 43,
+      "name": "多态"
+    }
+  ]
+}

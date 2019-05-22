@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+       <style>
+           #footer p{
+               margin: 0;
+               padding: 0;
+               font-size: 20px;
+               height: 50px;
+               width: 200px;
+               margin-top: -10px;
+               margin-left: 200px
+           }
+       </style>
+   </head>
+   <body>
+
+       <div id="container" style="height: 500px;width: 500px"></div>
+       <div id="footer" ><p>考点失分率</p></div>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+option = {
+    //x轴的属性值
+    xAxis: {
+        type: 'category',
+        data: ['Java基础','jdbc','面向对象','继承','重载']
+    },
+    //轴的属性值
+    yAxis: {
+        type: 'value',
+        data: [0.2,0.4,0.6,0.8,1]
+    },
+    //后台数据
+    series: [
+        {
+        data: [0.1, 0.2, 0.5, 0.4, 0.6],
+        type: 'line'
+    }
+    ]
+};
+;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+
+       </script>
+   </body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head >
+<!-- 用户管理页面 -->
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312"/>
+	<link rel="stylesheet" href="./layui/css/layui.css" media="all" />
+</head>
+<body>
+
+<p style="margin-top: 20px">
+<blockquote class="layui-elem-quote1 news_search">
+	<div class="layui-inline">
+		<h2 style="margin-left: 20px">未审核评论</h2>
+	</div>
+	<div class="layui-inline">
+		<a class="layui-btn layui-btn-normal" id="updata">批量通过</a>
+	</div>
+	<div class="layui-inline">
+		<a class="layui-btn layui-btn-danger batchDel">批量删除</a>
+	</div>
+
+</blockquote>
+</p>
+	<table class="layui-hide" id="test" lay-filter="demo"></table>
+     
+     <blockquote class="layui-elem-quote1 news_search">
+<div class="layui-inline">
+			<h2 style="margin-left: 20px">已审核评论</h2>
+		</div>
+		
+			<div class="layui-inline">
+			<a class="layui-btn layui-btn-danger batchDel2">批量删除</a>
+		</div>	
+	</blockquote>
+	<table class="layui-hide" id="test2" lay-filter="demo"></table>
+<a href="teacher.html">
+	<button style="margin-top: 30px;height: 50px" class="layui-btn layui-btn-fluid">返回</button>
+</a>
+              
+ <script src="./js/jquery-3.2.1.min.js" charset="utf-8"></script>
+<script src="./layui/layui.js" charset="utf-8"></script>
+<script>
+layui.use('table', function(){
+  var table = layui.table;
+  table.render({
+    elem: '#test'
+    ,url:'/comment/allComment'
+    ,type: 'GET'
+    ,even: true //开启隔行背景
+   	,request: {} //如果无需自定义请求参数，可不加该参数
+   	,response: {dataName: 'list'} //如果无需自定义数据响应名称，可不加该参数
+    ,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+      layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+      //,curr: 5 //设定初始在第 5 页
+      ,groups: 5 //只显示 1 个连续页码
+      ,first: '首页'//不显示首页
+      ,last: '尾页' //不显示尾页
+      
+    }
+    ,cols: [[
+       {checkbox: true, fixed: true}
+      ,{field:'id',  title: 'ID'}
+      ,{field:'replyName', width:120, title: '用户名'}
+      ,{field:'content',  title: '内容'}
+      ,{field:'time',   title: '时间',sort: true}
+      ,{fixed: 'right', width:178, align:'center', toolbar: '#barDemo',title:'操作'}
+    ]]  
+  });
+
+  table.render({
+	    elem: '#test2'
+	    ,url:'/comment/allComment1'
+	    ,type: 'GET'
+	    ,even: true //开启隔行背景
+	   	,request: {} //如果无需自定义请求参数，可不加该参数
+	   	,response: {dataName: 'list'} //如果无需自定义数据响应名称，可不加该参数
+	    ,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+	      layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+	      //,curr: 5 //设定初始在第 5 页
+	      ,groups: 5 //只显示 1 个连续页码
+	      ,first: '首页'//不显示首页
+	      ,last: '尾页' //不显示尾页
+	      
+	    }
+	    ,cols: [[
+	       {checkbox: true, fixed: true}
+	      ,{field:'id',  title: 'ID'}
+	      ,{field:'replyName', width:120, title: '用户名'}
+	      ,{field:'content',  title: '内容'}
+	      ,{field:'time',   title: '时间' ,sort: true}
+	      ,{fixed: 'right', width:178, align:'center', toolbar: '#barDemo1',title:'操作'}
+	    ]]  
+	  });
+  
+  //监听工具条
+  table.on('tool(demo)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'detail'){
+    	 layer.confirm('确认通过审核？', function(index){
+     		$.ajax({
+ 				url : "/comment/comment/updata/"+data.id,
+ 				success : function(result) {
+ 					if(result==200){
+ 						obj.del();
+ 					    layer.close(index);
+ 					} else {
+ 						layer.msg('通过审核失败');
+ 					}
+ 				}
+ 			});
+         obj.del();
+         layer.close(index);
+       });
+    } else if(obj.event === 'del'){
+      layer.confirm('真的删除行么', function(index){
+    		$.ajax({
+				url : "/comment/comment/"+data.id,
+				type : "DELETE",
+				success : function(result) {
+					if(result==200){
+						obj.del();
+					    layer.close(index);
+					} else {
+						layer.msg('删除失败');
+					}
+				}
+			});
+        obj.del();
+        layer.close(index);
+      });
+    } 
+  });
+
+
+
+
+  $(".batchDel").click(function(){
+	  var checkStatus = table.checkStatus('test')
+      ,data = checkStatus.data;
+      var ids=[]
+	  $.each(data,function(index,value){
+		ids.push(value.id); 
+		  });
+	  layer.confirm('确认删除选中行吗', function(index){
+  	  $.ajax({
+				url : "/comment/comment?ids="+ids,
+				type : "DELETE",
+				success : function(result) {
+					if(result==200){
+						 table.reload('test', {
+       					  page: {
+       					    curr: '1'
+       					  }
+       					});
+					    layer.close(index);
+					} else {
+						layer.msg('删除失败');
+					}
+				}
+			});
+         layer.close(index);
+       }); 
+    });
+
+  $(".batchDel2").click(function(){
+	  var checkStatus = table.checkStatus('test2')
+      ,data = checkStatus.data;
+      var ids=[]
+	  $.each(data,function(index,value){
+		ids.push(value.id); 
+		  });
+	  layer.confirm('确认删除选中行吗', function(index){
+  	  $.ajax({
+				url : "/comment/comment?ids="+ids,
+				type : "DELETE",
+				success : function(result) {
+					if(result==200){
+						 table.reload('test2', {
+       					  page: {
+       					    curr: '1'
+       					  }
+       					});
+					    layer.close(index);
+					} else {
+						layer.msg('删除失败');
+					}
+				}
+			});
+         layer.close(index);
+       }); 
+    });
+
+  $("#updata").click(function(){
+	  var checkStatus = table.checkStatus('test')
+      ,data = checkStatus.data;
+      var ids=[]
+	  $.each(data,function(index,value){
+		ids.push(value.id); 
+		  });
+	  layer.confirm('确认全部通过审核？', function(index){
+  	  $.ajax({
+				url : "/comment/comment/updata?ids="+ids,
+				success : function(result) {
+					if(result==200){
+						 table.reload('test', {
+       					  page: {
+       					    curr: '1'
+       					  }
+       					});
+						 table.reload('test2', {
+	       					  page: {
+	       					    curr: '1'
+	       					  }
+	       					});
+					    layer.close(index);
+					} else {
+						layer.msg('通过审核失败');
+					}
+				}
+			});
+         layer.close(index);
+       }); 
+    });
+  
+});
+
+	
+
+</script> 
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">通过</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="barDemo1">
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+</body>
+</html>
